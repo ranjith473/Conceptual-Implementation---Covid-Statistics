@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const round = require("mongo-round")
+const round = require("mongo-round");
 const bodyParser = require("body-parser");
 const port = 8080;
 
@@ -72,9 +72,7 @@ app.get("/hotspotStates", async (req, res) => {
       $group: {
         _id: "$state",
         rate: {
-          $sum: {
-            $divide: [{ $subtract: ["$infected", "$recovered"] }, "$infected"],
-          },
+          $sum: { $divide: [{ $subtract: ["$infected", "$recovered"] }, "$infected"]},
         },
       },
     },
@@ -90,7 +88,7 @@ app.get("/hotspotStates", async (req, res) => {
       $project: {
         state: "$_id",
         _id: 0,
-        rate: round("$rate", 5),
+        rate: {$round:["$rate", 5]},
       },
     },
   ]);
@@ -116,7 +114,7 @@ app.get("/healthyStates", async (req, res) => {
       $project: {
         state: "$_id",
         _id: 0,
-        mortality: round("$mortality", 5),
+        mortality: {$round:["$mortality", 5]},
       },
     },
   ]);
